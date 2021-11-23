@@ -16,69 +16,72 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-#include "drivers/sensors/pimoroni_trackball.h"
-#include "pointing_device.h"
-
 
 enum layer_number {
   _BASE,
-  _NUM,
   _SYMB,
-  _MUS,
-  _ADJ
+  _MISC,
+  _NAV,
+  _NUM
 };
 
-enum custom_keycodes {
-  BALL_HUI,//cycles hue
-  BALL_WHT,//cycles white
-  BALL_DEC,//decreased color
-  BALL_SCR,//scrolls
-  BALL_NCL,//left click
-  BALL_RCL,//right click
-  BALL_MCL,//middle click
+enum my_keycodes {
+    ENCVTL = SAFE_RANGE
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] =  LAYOUT(
-        KC_Q,         KC_W,    KC_E,    KC_R,    KC_T,                                         KC_Y,            KC_U,             KC_I,    KC_O,    KC_P,
-        KC_A,         KC_S,    KC_D,    KC_F,    KC_G,                                         KC_H,            KC_J,             KC_K,    KC_L,    KC_SCLN,
-        LSFT_T(KC_Z), KC_X,    KC_C,    KC_V,    KC_B,                                         KC_N,            KC_M,             KC_COMM, KC_DOT,  RSFT_T(KC_SLSH),
-                                                 KC_MUTE,                                      TG(_ADJ),
-                                        KC_LCTL, LALT_T(KC_BSPC), LT(_MUS,KC_SPC),    KC_H,   LT(_NUM,KC_ENT), LT(_SYMB,KC_DEL)
-    ),
-    [_NUM] = LAYOUT(
-        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,
-        KC_TAB,  KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX,                      KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_QUOT,
-        KC_LSFT, XXXXXXX, KC_MPRV, KC_MNXT, RESET,                        KC_HOME, KC_END,  KC_PGUP, KC_PGDN, KC_RSFT,
-                                            XXXXXXX,                      KC_NO,
-                                   KC_LCTL, KC_LALT, XXXXXXX,    KC_NO,   _______, KC_ENT
+        KC_J,         KC_C,         KC_Y,         KC_F,         KC_K,                                      KC_Z, KC_L,         KC_COMM,      KC_U,       KC_Q,
+        LCTL_T(KC_R), LGUI_T(KC_S), LALT_T(KC_T), LSFT_T(KC_H), KC_D,                                      KC_M, RSFT_T(KC_N), RALT_T(KC_A), RGUI_T(KC_I), RCTL_T(KC_O),
+        KC_ENT,       KC_V,         KC_G,         KC_P,         KC_B,                                      KC_X, KC_W,         KC_DOT,       KC_BSPC,    KC_DEL,
+                                                                ENCVTL,                                    XXXXXXX,
+                                                  TT(_NAV),     KC_E,    LT(_MISC, KC_CAPS),    XXXXXXX,   KC_SPC,  TT(_SYMB)
     ),
     [_SYMB] = LAYOUT(
-        KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,                        XXXXXXX, XXXXXXX, XXXXXXX, KC_EQL,  KC_MINS,
-        XXXXXXX, KC_F5,   KC_F6,   KC_F7,   KC_F8,                        KC_LBRC, KC_RBRC, XXXXXXX, KC_GRV,  KC_BSLS,
-        KC_LSFT, KC_F9,   KC_F10,  KC_F11,  KC_F12,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_RSFT,
-                                            XXXXXXX,                      KC_NO,
-                                   KC_LALT, XXXXXXX, XXXXXXX,    XXXXXXX, KC_NO,   _______
+        KC_COMM, KC_RCBR, KC_RBRC, KC_RPRN,   KC_SCLN,                          KC_PLUS, KC_7,    KC_8,    KC_9,    KC_ASTR,
+        KC_DOT,  KC_LCBR, KC_LBRC, KC_LPRN,   KC_COLN,                          KC_MINS, KC_4,    KC_5,    KC_6,    KC_SLSH,
+        KC_DQT,  KC_QUOT, KC_GRV,  KC_UNDS,   KC_BSLS,                          KC_0,    KC_1,    KC_2,    KC_3,    KC_EQL,
+                                              _______,                          XXXXXXX,
+                                   TO(_BASE), XXXXXXX, TO(_BASE),    TO(_BASE), _______, TO(_BASE)
     ),
-    [_MUS] = LAYOUT(
-        KC_LCTL, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        KC_LALT, KC_BTN3, KC_BTN2, KC_BTN1, BALL_SCR,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-        KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                            XXXXXXX,                       XXXXXXX,
-                                   XXXXXXX, XXXXXXX,  XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+    [_MISC] = LAYOUT(
+        KC_AT,   KC_CIRC, KC_PERC, KC_DLR,  KC_TILD,                      KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PSCR,
+        KC_PIPE, KC_AMPR, KC_EXLM, KC_QUES, KC_HASH,                      KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_HOME,
+        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_END,
+                                            _______,                      XXXXXXX,
+                                   _______, XXXXXXX, _______,    _______, XXXXXXX, _______
     ),
-    [_ADJ] = LAYOUT(
-        RESET,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      BALL_HUI, BALL_WHT, BALL_DEC, XXXXXXX, XXXXXXX,
-        EEP_RST, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      RGB_MOD,  RGB_HUI,  RGB_SAI,  RGB_VAI, RGB_TOG,
-        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      RGB_RMOD, RGB_HUD,  RGB_SAD,  RGB_VAD, _______,
-                                            XXXXXXX,                      _______,
-                                   XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX,  XXXXXXX
+    [_NAV] = LAYOUT(
+        XXXXXXX,    LCTL(KC_Y), LCTL(KC_Z), LCTL(KC_D), KC_CAPS,                      KC_BTN5, KC_WH_L, KC_WH_D, KC_WH_U, KC_WH_R,
+        KC_LEFT,    KC_DOWN,    KC_UP,      KC_RGHT,    KC_TAB,                       KC_BTN4, KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R,
+        LCTL(KC_A), LCTL(KC_X), LCTL(KC_C), LCTL(KC_V), KC_ESC,                       KC_ACL0, KC_BTN1, KC_BTN2, KC_BTN3, XXXXXXX,
+                                                        _______,                      KC_ACL2,
+                                               _______, XXXXXXX, _______,    KC_BTN1, XXXXXXX, _______
+    ),
+    [_NUM] = LAYOUT(
+        RESET,   KC_INS,  KC_HOME, KC_PGUP, KC_VOLU,                      KC_PPLS,  KC_P7,   KC_P8,   KC_P9,   KC_PAST,
+        EEP_RST, KC_DEL,  KC_END,  KC_PGDN, KC_VOLD,                      KC_PMNS,  KC_P4,   KC_P5,   KC_P6,   KC_PSLS,
+        KC_PENT, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE,                      KC_P0,    KC_P1,   KC_P2,   KC_P3,   KC_PEQL,
+                                            _______,                      XXXXXXX,
+                                   _______, KC_PDOT, _______,    _______, KC_PCMM, _______
     )
 };
 
+bool encoder_vertical = false;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case ENCVTL:
+      if (record->event.pressed) {
+        encoder_vertical = !encoder_vertical;
+      }
+      return false; // Skip all further processing of this key
+    default:
+      return true; // Process all other keycodes normally
+  }
+}
 
 #ifdef OLED_ENABLE
-
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 
@@ -182,16 +185,16 @@ static void render_status(void) {
         case _BASE:
             oled_write_P(PSTR("Base   "), false);
             break;
-        case _NUM:
+        case _SYMB:
             oled_write_P(PSTR("Numbers"), false);
             break;
-        case _SYMB:
+        case _MISC:
             oled_write_P(PSTR("Symbols"), false);
             break;
-        case _ADJ:
+        case _NAV:
             oled_write_P(PSTR("Adjust "), false);
             break;
-        case _MUS:
+        case _NUM:
             oled_write_P(PSTR("Mouse  "), false);
             break;
         default:
@@ -210,118 +213,23 @@ void oled_task_user(void) {
 
 #endif
 
-uint8_t white = 0;
-uint8_t red = 255;
-uint8_t green = 0;
-uint8_t blue = 0;
-
-void ball_increase_hue(void){
-      if(red!=255&&green!=255&&blue!=255){
-        red =255;
-      }
-      if (red==255&&green<255&&blue==0){
-       green += 15;
-      } else if(green==255&&blue==0&&red>0){
-        red-=15;
-      } else if(red==0&&blue<255&&green==255){
-        blue+=15;
-      } else if(blue==255&&green>0&&red==0){
-        green -= 15;
-      } else if(green == 0&&blue==255&&red<255){
-        red +=15;
-      } else if(green ==0&&blue>0&&red==255){
-        blue -=15;
-      }
-      trackball_set_rgbw(red,green,blue,white);
-}
-
-void decrease_color(void){
-  if (green>0){
-    green-=15;
-  }
-  if (red>0){
-    red-=15;
-  }
-  if (blue>0){
-    blue-=15;
-  }
-  trackball_set_rgbw(red,green,blue,white);
-}
-
-void cycle_white(void){
-  if (white<255){
-    white +=15;
-  } else{
-    white=0;
-  }
-  trackball_set_rgbw(red,green,blue,white);
-}
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record){
-  switch (keycode){
-  case  BALL_HUI:
-    if(record->event.pressed){
-      ball_increase_hue();
-    }
-    break;
-
-  case BALL_WHT:
-    if(record-> event.pressed){
-      cycle_white();
-    }
-    break;
-
-  case BALL_DEC:
-   if(record-> event.pressed){
-      decrease_color();
-    }
-    break;
-
-  case BALL_SCR:
-   if(record->event.pressed){
-     trackball_set_scrolling(true);
-   } else{
-     trackball_set_scrolling(false);
-   }
-   break;
-
-  case BALL_NCL:
-     record->event.pressed?register_code(KC_BTN1):unregister_code(KC_BTN1);
-     break;
-  case BALL_RCL:
-      record->event.pressed?register_code(KC_BTN2):unregister_code(KC_BTN2);
-      break;
-  case BALL_MCL:
-      record->event.pressed?register_code(KC_BTN3):unregister_code(KC_BTN3);
-      break;
-  }
-  return true;
-}
 #ifdef ENCODER_ENABLE
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) {
-        // Volume control
+    if (index == 0 && encoder_vertical) {
+        // Vertical
         if (clockwise) {
-            tap_code(KC_VOLU);
+            tap_code(KC_UP);
         } else {
-            tap_code(KC_VOLD);
+            tap_code(KC_DOWN);
+        }
+    } else if (index == 0) {
+        // Horzontal
+        if (clockwise) {
+            tap_code(KC_LEFT);
+        } else {
+            tap_code(KC_RGHT);
         }
     }
-    else if (index == 2) {
-      switch (get_highest_layer(layer_state)) {
-        case _ADJ:
-            clockwise?ball_increase_hue():cycle_white();
-            break;
-        case _MUS:
-            clockwise?tap_code(KC_WH_U):tap_code(KC_WH_D);
-            break;
-        default:
-            clockwise?tap_code(KC_PGUP):tap_code(KC_PGDN);
-            break;
-      }
-    }
-    // I only have 2 encoders on the the pimoroni example board, just add else ifs for your other encoders...
-    // the missing ones are encoder 1 on the right side and encoder 3 on the left side
     return true;
 }
 #endif

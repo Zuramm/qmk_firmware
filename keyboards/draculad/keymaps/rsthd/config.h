@@ -26,8 +26,12 @@ You should have received a copy of the GNU General Public License
 
 // #define MASTER_LEFT
 #define MASTER_RIGHT
-#define EE_HANDS
+// #define EE_HANDS
 
+#define PERMISSIVE_HOLD
+#define IGNORE_MOD_TAP_INTERRUPT
+
+#define TAPPING_TOGGLE 2
 
 #define PIMORONI_TRACKBALL_ENABLE
 #define PIMORONI_TRACKBALL_CLICK
